@@ -9,10 +9,14 @@ return {
       neocodeium.setup({
         manual = false, -- false = tự động gợi ý; true = chỉ khi gọi tay
         silent = true,
-        -- ẩn gợi ý Codeium khi popup completion (nvim-cmp/blink) đang mở
+        -- ẩn gợi ý Codeium khi popup completion (blink/nvim-cmp) đang mở
         filter = function()
-          local ok, cmp = pcall(require, "cmp")
-          if ok and cmp.visible() then
+          local ok_blink, blink = pcall(require, "blink.cmp")
+          if ok_blink and blink.is_visible and blink.is_visible() then
+            return false
+          end
+          local ok_cmp, cmp = pcall(require, "cmp")
+          if ok_cmp and cmp.visible() then
             return false
           end
           return true

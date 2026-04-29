@@ -8,7 +8,9 @@ vim.g.autoformat = false
 vim.g.lazyvim_eslint_auto_format = false
 
 -- Giảm I/O cho tsserver trên project lớn / WSL
-vim.opt.updatetime = 1000
+vim.opt.updatetime = 300
 vim.opt.backup = false
 vim.opt.writebackup = false
 vim.opt.swapfile = false
+-- Giữ undo history qua session (rẻ hơn swapfile nhiều)
+vim.opt.undofile = true
