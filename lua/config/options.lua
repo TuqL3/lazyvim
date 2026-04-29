@@ -6,3 +6,9 @@
 vim.g.autoformat = false
 -- Tắt ESLint auto-fix on save (LazyVim's eslint extras)
 vim.g.lazyvim_eslint_auto_format = false
+
+-- Giảm I/O cho tsserver trên project lớn / WSL
+vim.opt.updatetime = 1000
+vim.opt.backup = false
+vim.opt.writebackup = false
+vim.opt.swapfile = false
