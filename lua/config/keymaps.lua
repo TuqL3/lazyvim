@@ -4,14 +4,24 @@
 
 local map = vim.keymap.set
 
--- 3 terminal float riêng biệt
-map("n", "<leader>t1", function() Snacks.terminal.toggle("bash", { win = { position = "float" }, env = { id = "1" } }) end, { desc = "Terminal 1" })
-map("n", "<leader>t2", function() Snacks.terminal.toggle("bash", { win = { position = "float" }, env = { id = "2" } }) end, { desc = "Terminal 2" })
-map("n", "<leader>t3", function() Snacks.terminal.toggle("bash", { win = { position = "float" }, env = { id = "3" } }) end, { desc = "Terminal 3" })
+-- Ép tất cả terminal dùng zsh
+vim.o.shell = "/bin/zsh"
 
--- Terminal split (toggle: bấm lần nữa để ẩn)
-map("n", "<leader>tv", function() Snacks.terminal.toggle("bash", { win = { position = "right" }, env = { id = "vsplit" } }) end, { desc = "Terminal vertical (toggle)" })
-map("n", "<leader>th", function() Snacks.terminal.toggle("bash", { win = { position = "bottom" }, env = { id = "hsplit" } }) end, { desc = "Terminal horizontal (toggle)" })
+local zsh = "/bin/zsh"
+
+-- 3 terminal float riêng biệt (zsh)
+map("n", "<leader>t1", function() Snacks.terminal.toggle(zsh, { win = { position = "float" }, env = { id = "1" } }) end, { desc = "Terminal 1" })
+map("n", "<leader>t2", function() Snacks.terminal.toggle(zsh, { win = { position = "float" }, env = { id = "2" } }) end, { desc = "Terminal 2" })
+map("n", "<leader>t3", function() Snacks.terminal.toggle(zsh, { win = { position = "float" }, env = { id = "3" } }) end, { desc = "Terminal 3" })
+
+-- Terminal toggle: bấm lần nữa để ẩn
+map("n", "<leader>th", function()
+  Snacks.terminal.toggle(zsh, { win = { position = "bottom" }, env = { id = "hsplit" } })
+end, { desc = "Terminal horizontal (toggle)" })
+
+map("n", "<leader>tv", function()
+  Snacks.terminal.toggle(zsh, { win = { position = "right" }, env = { id = "vsplit" } })
+end, { desc = "Terminal vertical (toggle)" })
 
 -- Thoát insert mode trong terminal nhanh hơn (Esc thay vì Ctrl-\ Ctrl-n)
 map("t", "<esc><esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
