@@ -24,12 +24,12 @@ return {
       })
 
       local map = vim.keymap.set
-      map("i", "<A-f>", function() neocodeium.accept() end, { desc = "Codeium: accept" })
-      map("i", "<A-w>", function() neocodeium.accept_word() end, { desc = "Codeium: accept word" })
-      map("i", "<A-l>", function() neocodeium.accept_line() end, { desc = "Codeium: accept line" })
-      map("i", "<A-]>", function() neocodeium.cycle_or_complete() end, { desc = "Codeium: next" })
-      map("i", "<A-[>", function() neocodeium.cycle_or_complete(-1) end, { desc = "Codeium: prev" })
-      map("i", "<A-c>", function() neocodeium.clear() end, { desc = "Codeium: dismiss" })
+      map("i", "<C-f>", function() neocodeium.accept() end, { desc = "Codeium: accept" })
+      map("i", "<C-y>", function() neocodeium.accept_word() end, { desc = "Codeium: accept word" })
+      map("i", "<C-l>", function() neocodeium.accept_line() end, { desc = "Codeium: accept line" })
+      map("i", "<C-]>", function() neocodeium.cycle_or_complete() end, { desc = "Codeium: next" })
+      map("i", "<C-b>", function() neocodeium.cycle_or_complete(-1) end, { desc = "Codeium: prev" })
+      map("i", "<C-q>", function() neocodeium.clear() end, { desc = "Codeium: dismiss" })
     end,
   },
 }

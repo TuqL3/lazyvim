@@ -1,22 +1,11 @@
-local colors = {
-  "#ff5555", -- red
-  "#ff9e64", -- orange
-  "#f1fa8c", -- yellow
-  "#50fa7b", -- green
-  "#8be9fd", -- cyan
-  "#bd93f9", -- purple
-}
+local header_color = "#8be9fd" -- cyan
 
 vim.api.nvim_create_autocmd("ColorScheme", {
   callback = function()
-    for i, color in ipairs(colors) do
-      vim.api.nvim_set_hl(0, "LukasHeader" .. i, { fg = color, bold = true })
-    end
+    vim.api.nvim_set_hl(0, "LukasHeader", { fg = header_color, bold = true })
   end,
 })
-for i, color in ipairs(colors) do
-  vim.api.nvim_set_hl(0, "LukasHeader" .. i, { fg = color, bold = true })
-end
+vim.api.nvim_set_hl(0, "LukasHeader", { fg = header_color, bold = true })
 
 local lines = {
   "██╗     ██╗   ██╗██╗  ██╗ █████╗ ███████╗",
@@ -28,8 +17,8 @@ local lines = {
 }
 
 local header_text = {}
-for i, line in ipairs(lines) do
-  table.insert(header_text, { line .. "\n", hl = "LukasHeader" .. i })
+for _, line in ipairs(lines) do
+  table.insert(header_text, { line .. "\n", hl = "LukasHeader" })
 end
 
 local quotes = {
