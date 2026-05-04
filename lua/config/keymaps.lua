@@ -29,23 +29,50 @@ vim.o.shellquote = ""
 vim.o.shellredir = ">%s 2>&1"
 vim.o.shellpipe = "2>&1| tee"
 
--- 3 terminal float riêng biệt (Git Bash) — to ~85% màn hình
+-- Terminal: 2 layout chính + tạo/switch nhiều terminal
 local float_win = { position = "float", width = 0.85, height = 0.85, border = "rounded" }
-map("n", "<leader>t1", function() Snacks.terminal.toggle({ bash, "-i", "-l" }, { win = float_win, env = { id = "1" } }) end, { desc = "Terminal 1" })
-map("n", "<leader>t2", function() Snacks.terminal.toggle({ bash, "-i", "-l" }, { win = float_win, env = { id = "2" } }) end, { desc = "Terminal 2" })
-map("n", "<leader>t3", function() Snacks.terminal.toggle({ bash, "-i", "-l" }, { win = float_win, env = { id = "3" } }) end, { desc = "Terminal 3" })
+local split_win = { position = "bottom", height = 0.4 }
 
--- Terminal toggle: bấm lần nữa để ẩn
-map("n", "<leader>th", function()
-  Snacks.terminal.toggle({ bash, "-i", "-l" }, { win = { position = "bottom", height = 0.4 }, env = { id = "hsplit" } })
-end, { desc = "Terminal horizontal (toggle)" })
+local term_counter = 0
+local function new_terminal()
+  term_counter = term_counter + 1
+  Snacks.terminal.toggle({ bash, "-i", "-l" }, { win = split_win, env = { id = "term" .. term_counter } })
+end
 
-map("n", "<leader>tv", function()
-  Snacks.terminal.toggle({ bash, "-i", "-l" }, { win = { position = "right", width = 0.5 }, env = { id = "vsplit" } })
-end, { desc = "Terminal vertical (toggle)" })
+local function list_terminals()
+  local terms = Snacks.terminal.list()
+  if #terms == 0 then return vim.notify("No terminals open", vim.log.levels.INFO) end
+  vim.ui.select(terms, {
+    prompt = "Switch terminal:",
+    format_item = function(t)
+      local name = vim.api.nvim_buf_get_name(t.buf)
+      local id = (t.opts and t.opts.env and t.opts.env.id) or "?"
+      return ("[%s] %s"):format(id, name)
+    end,
+  }, function(choice)
+    if not choice then return end
+    for _, t in ipairs(terms) do
+      if t ~= choice and t:win_valid() then t:hide() end
+    end
+    choice:show():focus()
+  end)
+end
 
--- Thoát insert mode trong terminal nhanh hơn (Esc thay vì Ctrl-\ Ctrl-n)
-map("t", "<esc><esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
+-- Toggle terminal split (dưới) — dùng được ở normal/insert/terminal mode
+map({ "n", "i", "t" }, "<C-_>", function()
+  Snacks.terminal.toggle({ bash, "-i", "-l" }, { win = split_win, env = { id = "main" } })
+end, { desc = "Toggle terminal (split)" })
+
+-- Toggle terminal float — dùng được ở normal/insert/terminal mode
+map({ "n", "i", "t" }, "<C-\\>", function()
+  Snacks.terminal.toggle({ bash, "-i", "-l" }, { win = float_win, env = { id = "float" } })
+end, { desc = "Toggle terminal (float)" })
+
+map("n", "<leader>tn", new_terminal, { desc = "New terminal" })
+map("n", "<leader>tl", list_terminals, { desc = "List terminals" })
+
+-- Esc 1 lần để thoát insert mode trong terminal
+map("t", "<esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 
 -- Smart gd: dùng LSP nếu đã ready, nếu chưa thì fallback sang grep word dưới cursor
 map("n", "gd", function()

@@ -44,9 +44,14 @@ return {
 
       vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
         callback = function()
-          if vim.b.minimap_disable then
-            map.close()
-          end
+          vim.schedule(function()
+            if vim.bo.filetype == "minimap" then return end
+            if vim.b.minimap_disable or vim.bo.buftype ~= "" then
+              map.close()
+            else
+              map.open()
+            end
+          end)
         end,
       })
 

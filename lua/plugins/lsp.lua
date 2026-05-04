@@ -70,6 +70,39 @@ return {
             run = "onSave",
             problems = { shortenToSingleLine = true },
           },
+          root_dir = function(fname)
+            local util = require("lspconfig.util")
+            return util.root_pattern(
+              "eslint.config.js", "eslint.config.mjs", "eslint.config.cjs", "eslint.config.ts",
+              ".eslintrc", ".eslintrc.js", ".eslintrc.cjs", ".eslintrc.yaml", ".eslintrc.yml", ".eslintrc.json",
+              "package.json"
+            )(fname)
+          end,
+          on_new_config = function(config, new_root_dir)
+            local function has_eslint(dir)
+              return vim.fn.filereadable(dir .. "/node_modules/eslint/package.json") == 1
+                or vim.fn.filereadable(dir .. "/node_modules/.bin/eslint") == 1
+            end
+            local dir = new_root_dir
+            while dir and dir ~= "/" do
+              if has_eslint(dir) then return end
+              dir = vim.fn.fnamemodify(dir, ":h")
+            end
+            config.enabled = false
+          end,
+        },
+
+        lua_ls = {
+          settings = {
+            Lua = {
+              diagnostics = {
+                globals = { "vim", "Snacks", "MiniMap" },
+              },
+              workspace = {
+                checkThirdParty = false,
+              },
+            },
+          },
         },
 
         gopls = {
