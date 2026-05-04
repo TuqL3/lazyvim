@@ -21,7 +21,20 @@ map("n", "<leader>th", function()
 end, { desc = "Terminal horizontal (toggle)" })
 
 map("n", "<leader>tv", function()
-  Snacks.terminal.toggle(zsh, { win = { position = "right", width = 0.5 }, env = { id = "vsplit" } })
+  local term = Snacks.terminal.toggle(zsh, {
+    win = { position = "right", width = 0.5 },
+    env = { id = "vsplit" },
+  })
+  vim.schedule(function()
+    local ok, mini_map = pcall(require, "mini.map")
+    if not ok then return end
+    local visible = term and term.win and vim.api.nvim_win_is_valid(term.win)
+    if visible then
+      mini_map.close()
+    else
+      mini_map.open()
+    end
+  end)
 end, { desc = "Terminal vertical (toggle)" })
 
 -- Thoát insert mode trong terminal nhanh hơn (Esc thay vì Ctrl-\ Ctrl-n)
