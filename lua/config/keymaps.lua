@@ -94,6 +94,24 @@ map("n", "gd", function()
   end
 end, { desc = "Goto definition (LSP or grep fallback)" })
 
+-- Smart gr: tìm tất cả nơi đang sử dụng function (references)
+map("n", "gr", function()
+  local clients = vim.lsp.get_clients({ bufnr = 0, method = "textDocument/references" })
+  local ready = false
+  for _, c in ipairs(clients) do
+    if not c.initializing then ready = true break end
+  end
+  if ready then
+    vim.lsp.buf.references()
+  else
+    vim.notify("LSP chưa sẵn sàng để tìm references", vim.log.levels.WARN)
+  end
+end, { desc = "Goto references (LSP)" })
+
+-- Tab để chuyển buffer (chỉ normal mode, không ảnh hưởng insert mode)
+map("n", "<Tab>", "<cmd>bnext<cr>", { desc = "Next buffer" })
+map("n", "<S-Tab>", "<cmd>bprevious<cr>", { desc = "Previous buffer" })
+
 -- Git hunk: discard / preview / nhảy hunk
 map({ "n", "v" }, "<leader>hr", "<cmd>Gitsigns reset_hunk<cr>", { desc = "Discard hunk (reset)" })
 map("n", "<leader>hR", "<cmd>Gitsigns reset_buffer<cr>", { desc = "Discard cả file" })

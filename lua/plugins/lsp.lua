@@ -22,12 +22,12 @@ return {
                 },
               },
               preferences = {
-                includePackageJsonAutoImports = "off",
+                includePackageJsonAutoImports = "auto",
                 importModuleSpecifier = "shortest",
               },
               suggest = {
-                autoImports = false,
-                completeFunctionCalls = false,
+                autoImports = true,
+                completeFunctionCalls = true,
               },
               workspaceSymbols = { scope = "currentProject" },
               implementationsCodeLens = { enabled = false },
@@ -42,7 +42,7 @@ return {
               },
             },
             javascript = {
-              suggest = { autoImports = false, completeFunctionCalls = false },
+              suggest = { autoImports = true, completeFunctionCalls = true },
               inlayHints = {
                 parameterNames = { enabled = "none" },
                 parameterTypes = { enabled = false },
