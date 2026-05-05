@@ -4,30 +4,9 @@
 
 local map = vim.keymap.set
 
--- Ép tất cả terminal dùng Git Bash — tìm bash.exe ở các vị trí thường gặp
-local function find_git_bash()
-  local candidates = {
-    "C:\\Program Files\\Git\\bin\\bash.exe",
-    "C:\\Program Files (x86)\\Git\\bin\\bash.exe",
-    vim.env.LOCALAPPDATA and (vim.env.LOCALAPPDATA .. "\\Programs\\Git\\bin\\bash.exe") or nil,
-    vim.env.USERPROFILE and (vim.env.USERPROFILE .. "\\scoop\\apps\\git\\current\\bin\\bash.exe") or nil,
-    "C:\\msys64\\usr\\bin\\bash.exe",
-  }
-  for _, p in ipairs(candidates) do
-    if p and vim.fn.filereadable(p) == 1 then return p end
-  end
-  local ep = vim.fn.exepath("bash")
-  if ep ~= "" then return ep end
-  return "bash"
-end
-
-local bash = find_git_bash()
-vim.o.shell = bash
-vim.o.shellcmdflag = "-s"
-vim.o.shellxquote = ""
-vim.o.shellquote = ""
-vim.o.shellredir = ">%s 2>&1"
-vim.o.shellpipe = "2>&1| tee"
+local shell = vim.fn.exepath("zsh") ~= "" and vim.fn.exepath("zsh") or "zsh"
+vim.o.shell = shell
+vim.o.shellcmdflag = "-c"
 
 -- Terminal: 2 layout chính + tạo/switch nhiều terminal
 local float_win = { position = "float", width = 0.85, height = 0.85, border = "rounded" }
@@ -36,7 +15,7 @@ local split_win = { position = "bottom", height = 0.4 }
 local term_counter = 0
 local function new_terminal()
   term_counter = term_counter + 1
-  Snacks.terminal.toggle({ bash, "-i", "-l" }, { win = split_win, env = { id = "term" .. term_counter } })
+  Snacks.terminal.toggle({ shell, "-i", "-l" }, { win = split_win, env = { id = "term" .. term_counter } })
 end
 
 local function list_terminals()
@@ -60,12 +39,12 @@ end
 
 -- Toggle terminal split (dưới) — dùng được ở normal/insert/terminal mode
 map({ "n", "i", "t" }, "<C-_>", function()
-  Snacks.terminal.toggle({ bash, "-i", "-l" }, { win = split_win, env = { id = "main" } })
+  Snacks.terminal.toggle({ shell, "-i", "-l" }, { win = split_win, env = { id = "main" } })
 end, { desc = "Toggle terminal (split)" })
 
 -- Toggle terminal float — dùng được ở normal/insert/terminal mode
 map({ "n", "i", "t" }, "<C-\\>", function()
-  Snacks.terminal.toggle({ bash, "-i", "-l" }, { win = float_win, env = { id = "float" } })
+  Snacks.terminal.toggle({ shell, "-i", "-l" }, { win = float_win, env = { id = "float" } })
 end, { desc = "Toggle terminal (float)" })
 
 map("n", "<leader>tn", new_terminal, { desc = "New terminal" })
